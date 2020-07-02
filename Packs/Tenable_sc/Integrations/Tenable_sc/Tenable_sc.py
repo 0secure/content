@@ -497,6 +497,52 @@ def create_asset(name, description, owner_id, tags, ips):
 
     return send_request(path, method='post', body=body)
 
+def update_asset_command():
+    asset_id = demisto.args().get('id')
+    asset_type = demisto.args().get('type')
+    data = demisto.args().get('data')
+
+    res = update_asset(asset_id, asset_type, data)
+
+    if not res or 'response' not in res:
+        return_error('Error: Could not update the asset')
+
+    asset = res['response']
+
+    mapped_asset = {
+        'ID': asset['id'],
+        'Name': asset['name'],
+        'OwnerName': asset['owner'].get('username'),
+        'Tags': asset['tags'],
+    }
+
+    headers = [
+        'ID',
+        'Name',
+        'OwnerName',
+        'Tags'
+    ]
+
+    demisto.results({
+        'Type': entryTypes['note'],
+        'Contents': res,
+        'ContentsFormat': formats['json'],
+        'ReadableContentsFormat': formats['markdown'],
+        'HumanReadable': tableToMarkdown('Asset updated successfully', mapped_asset, headers=headers, removeNull=True),
+        'EntryContext': {
+            'TenableSC.Asset(val.ID===obj.ID)': createContext(mapped_asset, removeNull=True)
+        }
+    })
+
+
+def update_asset(asset_id, asset_type, data):
+    path = 'asset/' + asset_id
+    datafield = "definedIPs" if asset_type == "ip" else "definedDNSNames"
+    body = {
+        datafield: data,
+    }
+
+    return send_request(path, method='patch', body=body)
 
 def delete_asset_command():
     asset_id = demisto.args()['asset_id']
