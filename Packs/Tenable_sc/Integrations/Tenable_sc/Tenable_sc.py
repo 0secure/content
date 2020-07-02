@@ -498,11 +498,11 @@ def create_asset(name, description, owner_id, tags, ips):
     return send_request(path, method='post', body=body)
 
 def update_asset_command():
-    asset_id = demisto.args().get('id')
-    asset_type = demisto.args().get('type')
-    data = demisto.args().get('data')
+    asset_id = demisto.args().get('asset_id')
+    asset_type = demisto.args().get('asset_type')
+    asset_list = demisto.args().get('asset_list')
 
-    res = update_asset(asset_id, asset_type, data)
+    res = update_asset(asset_id, asset_type, asset_list)
 
     if not res or 'response' not in res:
         return_error('Error: Could not update the asset')
@@ -534,12 +534,11 @@ def update_asset_command():
         }
     })
 
-
-def update_asset(asset_id, asset_type, data):
+def update_asset(asset_id, asset_type, asset_list):
     path = 'asset/' + asset_id
     datafield = "definedIPs" if asset_type == "ip" else "definedDNSNames"
     body = {
-        datafield: data,
+        datafield: asset_list,
     }
 
     return send_request(path, method='patch', body=body)
