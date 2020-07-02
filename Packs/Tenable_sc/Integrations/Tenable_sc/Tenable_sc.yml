@@ -735,6 +735,42 @@ script:
       required: true
       secret: false
     deprecated: false
+    description: Update an Asset in Tenable.sc with provided IP addresses or DNS entries
+    execution: false
+    name: tenable-sc-update-asset
+    outputs:
+    - contextPath: TenableSC.Asset.Name
+      description: Asset Name
+      type: string
+    - contextPath: TenableSC.Asset.ID
+      description: Asset ID
+      type: string
+    - contextPath: TenableSC.Asset.OwnerName
+      description: Asset owner name
+      type: string
+    - contextPath: TenableSC.Asset.Tags
+      description: Asset tags
+      type: string
+  - arguments:
+    - default: false
+      description: Asset ID that can be retrieved from the list-assets command
+      isArray: false
+      name: asset_id
+      required: true
+      secret: false
+    - default: false
+      description: Asset Type (dns or ip).  Must match the type of asset in Tenable.sc.
+      isArray: false
+      name: asset_type
+      required: true
+      secret: false
+    - default: false
+      description: Asset List (comma-separated).
+      isArray: false
+      name: asset_list
+      required: true
+      secret: false
+    deprecated: false
     description: Get details for a given asset in Tenable.sc
     execution: false
     name: tenable-sc-get-asset
